@@ -23,20 +23,19 @@ interface User {
     };
 }
 
-// Define the ApiResponse interface
 interface ApiResponse {
     results: User[];
 }
 
 export const UserGenerator = () => {
     const [apiData, setData] = useState<ApiResponse | null>(null);
-    const [errorState, setError] = useState<boolean>(false);
+    const [errorState, setError] = useState<string | null>(null); 
     const [loading, setLoading] = useState<boolean>(false);
     const [thankDiv, setThankDiv] = useState<boolean>(false);
 
     const handleUserGenerator = async () => {
         setLoading(true);
-        setError(false);
+        setError(null); 
 
         try {
             const api = `https://randomuser.me/api/`;
@@ -49,7 +48,7 @@ export const UserGenerator = () => {
             const data: ApiResponse = await res.json();
             setData(data);
         } catch (error) {
-            setError(true);
+            setError((error as Error).message); 
         } finally {
             setLoading(false);
         }
@@ -83,7 +82,7 @@ export const UserGenerator = () => {
                     {loading ? (
                         <div className="loader"></div>
                     ) : errorState ? (
-                        <p style={{ color: "red" }}>Error: Could not fetch user data</p>
+                        <p style={{ color: "red" }}>Error: {errorState}</p> 
                     ) : (
                         <div className="w-4/5 max shadow-lg md:w-96 lg:w-96 mx-auto rounded-xl py-4 bg-white relative">
                             {thankDiv && (
