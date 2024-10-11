@@ -1,11 +1,35 @@
 import { useEffect, useState } from "react";
-
 import { CiMail, CiPhone, CiUser, CiLocationOn } from "react-icons/ci";
 import { PiUserPlusLight } from "react-icons/pi";
 
+interface User {
+    gender: string;
+    name: {
+        first: string;
+        last: string;
+    };
+    email: string;
+    location: {
+        city: string;
+        state: string;
+        country: string;
+    };
+    login: {
+        md5: string;
+    };
+    cell: string;
+    picture: {
+        large: string;
+    };
+}
+
+interface ApiResponse {
+    results: User[];
+}
+
 export const UserGenerator = () => {
-    const [apiData, setData] = useState<any>(null);
-    const [error, setError] = useState<boolean>(false);
+    const [apiData, setData] = useState<ApiResponse | null>(null);
+    const [errorState, setError] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [thankDiv, setThankDiv] = useState<boolean>(false);
 
@@ -26,7 +50,6 @@ export const UserGenerator = () => {
             setData(data);
         } catch (error: any) {
             setError(true);
-            setLoading(false);
         } finally {
             setLoading(false);
         }
@@ -50,7 +73,6 @@ export const UserGenerator = () => {
 
     return (
         <>
-
             {apiData && (
                 <div className="flex flex-col items-center flex-nowrap w-full h-full" style={{ backgroundImage: "url('map.svg')", backgroundSize: "contain", backgroundRepeat: "no-repeat", backgroundPosition: "center" }}>
                     <h1 style={{ fontFamily: "Anybody" }} className={`${mainHeading_styles}`}>RANDOM USER GENERATOR</h1>
@@ -58,7 +80,7 @@ export const UserGenerator = () => {
 
                     {loading ? (
                         <div className="loader"></div>
-                    ) : error ? (
+                    ) : errorState ? (
                         <p style={{ color: "red" }}>Error: Could not fetch user data</p>
                     ) : (
                         <div className="w-4/5 max shadow-lg md:w-96 lg:w-96 mx-auto rounded-xl py-4 bg-white relative">
@@ -70,7 +92,7 @@ export const UserGenerator = () => {
 
                             <img className="mx-auto rounded-full w-52 h-52 my-3" src={apiData.results[0].picture.large} alt="User" />
 
-                            <div className="flex items-center justify-center bg-lightBlue text-white">
+                            <div className={` ${para_styles}`}>
                                 <CiUser className="w-8 h-8" />
                                 <h3 className="text-4xl font-bold text-center py-2">{apiData.results[0].name.first} {apiData.results[0].name.last}</h3>
                             </div>
@@ -101,7 +123,6 @@ export const UserGenerator = () => {
                     <button onClick={handleAppreciateBtn} className={`${btn_styles}`}>Appreciate Now</button>
                 </div>
             )}
-
         </>
     );
 };
